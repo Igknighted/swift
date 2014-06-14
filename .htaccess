@@ -1,0 +1,4 @@
+# Used to ensure autosync.cgi execution
+Options +ExecCGI
+AddHandler cgi-script .cgi
+
