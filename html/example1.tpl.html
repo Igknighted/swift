@@ -1,0 +1,21 @@
+<!-- BEGIN: main -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>WebCPP Example 1</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+	<body>
+		<div>This example shows that the blocks below are reusable. You will see below that the text from myblock1 in the file html/example1.tpl.html gets used twice and myblock2 never makes it to output.</div>
+		<!-- BEGIN: myblock1 -->
+			<div>This is myblock1...</div>
+			<!-- BEGIN: test -->
+				<div>This is myblock1.test...</div>
+			<!-- END: test -->
+		<!-- END: myblock1 -->
+		<!-- BEGIN: myblock2 -->
+			<div>This is myblock2... it does not get shown.</div>
+		<!-- END: myblock2 -->
+	</body>
+</html>
+<!-- END: main -->

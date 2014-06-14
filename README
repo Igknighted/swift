@@ -1,0 +1,70 @@
+swift
+================================================================================
+A simplistic web CGI library for C++ in a less than monolithic form!
+
+Features:
+- Easy to use functions to set cookies, read cookies, and common request data.
+- Supports file uploads in a simplistic manner.
+- Has a built in templating system so that you can code first and HTML later.
+- Built to easily follow an MVC pattern.
+
+Goals:
+The goals of swift are simple and blatantly straight forward. This library is
+made to provide a common web developer from PHP an easy way into making quicker
+web based applications.
+
+Open Source Statement:
+swift.cpp is open source and free to use and redistribute.
+
+Todo:
+- Need to make a simplistic deployment interface. This is something that needs to
+be usable on even a shared hosting platform without SSH access.
+
+How to compile
+================================================================================
+Compiling should be as simple as this:
+g++ example1_templates.cpp -o /home/username/public_html/example1_templates.cgi
+
+It should run from www.yoursite.com/example1_templates.cgi
+
+You may need to setup apache to execute CGI binaries. 
+
+
+Examples
+================================================================================
+
+All the templates are stored in the html directory.
+
+example1 - this example demonstrates a basic template and how to use the
+template blocks. One block is parsed out twice and the other block is not.
+
+example2 - this example demonstrates how to utilize variables in your code with
+the template blocks.
+
+example3 - this example demonstrates how to utilize a basic form on your site
+
+example4 - this example demonstrates how to deal with storing a file that has
+been uploaded as a part of multipart form data
+
+example5 - this example demonstrates setting and unsetting cookies
+
+example6 - this example demonstrates setting a header to do a redirect. Any
+header you want can be set, not just redirects.
+
+
+License
+================================================================================
+Copyright (C) 2010 - 2012  Samuel Peterson <sam.igknighted@gmail.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
