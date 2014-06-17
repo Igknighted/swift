@@ -1,0 +1,63 @@
+#!/bin/bash
+#
+# This is an automated builder script that can be used to build compiled CGI binaries with incrond.
+#
+# !buildmng: OFF
+# !buildcmd: exit
+
+
+if [ ! -d "$1" ]; then
+	echo Invalid path selected
+	exit
+fi
+
+cd "$1"
+
+if [ ! -f "$2" ]; then
+	echo Invalid file selected
+	exit
+fi
+
+FILENAME=$2
+NAME="${FILENAME%.*}"
+SECONDS_AGO_LAST_MODIFIED=$(echo `date --utc +%s` - `date --utc --reference="$FILENAME" +%s` | bc)
+
+# this entire block of code is for troubleshooting.
+# I used it and found out I onling needed to use IN_CREATE because g++ is a bitch
+# Steps:
+# - Set incron
+# - edit a monitored file
+# - Run this over and over to see what's up: ps aux | grep -E 'swiftbuild|g\+\+' --color
+#
+# - uncomment following:
+#
+#echo Waiting 15 seconds for safety.
+#sleep 15s;
+#
+#if [ "$SECONDS_AGO_LAST_MODIFIED" -le "15" ]; then
+#	echo "File was edited within the last 15 seconds... not bothering"
+#	exit
+#fi
+
+
+echo "$FILENAME" | grep '^\.' && echo Hidden file, not doing it. &&  exit
+grep -q '!buildon' "$2" || echo Build set to off, not going it. 
+grep -q '!buildon' "$2" || exit
+
+# CRLF line terminators will just fudge things up... seriously... stop it windows
+sed -i 's:\r::g' "$FILENAME"
+
+BUILDCMD=$(grep '!buildcmd:' "$2" | cut -d':' -f2 | sed -e "s:__filename__:$FILENAME:g" -e "s:__name__:$NAME:g")
+
+if [ "$BUILDCMD" == "" ]; then
+	echo No build command
+	exit
+fi
+
+
+
+echo Running: $BUILDCMD
+
+$BUILDCMD
+
+

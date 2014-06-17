@@ -24,6 +24,7 @@
 #include <cstring>
 #include <fstream>
 #include <sstream>
+#include <dlfcn.h>
 
 
 using namespace std;
@@ -76,6 +77,10 @@ class swift
 		
 		string str_replace(string, string, string);
 		string str_replace_single(string, string, string);
+
+		
+		int hook(string);
+		int hook(string, string);
 		
 	private:
 		// Used for storing get URL data, form data, and multipart form data.
@@ -103,6 +108,50 @@ swift::swift(string content_typein)
 	
 	process_data();
 }
+
+
+
+
+int swift::hook(string sharedlibrary) {
+	return hook(sharedlibrary, "./");
+}
+
+
+
+
+int swift::hook(string sharedlibrary, string path) {
+
+	string sharedlibfile = path + sharedlibrary + ".so";
+
+	void* handle = dlopen(sharedlibfile.c_str(), RTLD_LAZY);
+
+	if (!handle) {
+		cerr << "Cannot open library: " << dlerror() << '\n';
+		return 1;
+	}
+
+	// load the symbol
+	typedef void (*sharedlibraryfunction_t)();
+
+	// reset errors
+	dlerror();
+
+	sharedlibraryfunction_t sharedlibraryfunction = (sharedlibraryfunction_t) dlsym(handle, sharedlibrary.c_str());
+
+	const char *dlsym_error = dlerror();
+
+	if (dlsym_error) {
+		cerr << "Cannot load symbol '" << sharedlibrary << "': " << dlsym_error << endl;
+		dlclose(handle);
+	}
+
+	// call that function from sharedlibraryfunction.so
+	sharedlibraryfunction();
+
+	dlclose(handle);
+
+}
+
 
 char * swift::request(string variable)
 {
