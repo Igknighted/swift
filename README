@@ -9,13 +9,10 @@ Features:
 - Built to easily follow an MVC pattern.
 - Swiftbuilder for on the go staging/automated-building
 
-Goals:
-The goals of swift are simple and blatantly straight forward. This library is
-made to provide a common web developer from PHP an easy way into making quicker
-web based applications.
-
-Open Source Statement:
-swift.cpp is open source and free to use and redistribute.
+The goal of swift is to acheive simplistic web development with C++ in an
+apache + mod_cgi environment. One benefit to using C++ to make your website is
+the ability to control everything. The methods to optimize a website in a lower
+level language like C++ are almost limitless.
 
 
 How to compile
