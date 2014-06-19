@@ -7,7 +7,7 @@ Features:
 - Supports file uploads in a simplistic manner.
 - Has a built in templating system so that you can code first and HTML later.
 - Built to easily follow an MVC pattern.
-- Swiftbuilder for on the go staging
+- Swiftbuilder for on the go staging/automated-building
 
 Goals:
 The goals of swift are simple and blatantly straight forward. This library is
