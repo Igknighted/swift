@@ -1,5 +1,6 @@
-// Compile it:
-// g++ -fPIC -shared -export-dynamic test.cpp -o test.so
+// !buildon - This lest swiftbuilder that we can use the buildcmd to make this
+// This option is read by swiftbuilder to set the the application build command on edit
+// !buildcmd: g++ -fPIC -shared -export-dynamic __filename__ -o __name__.so
 
 #include <iostream>
 using namespace std;

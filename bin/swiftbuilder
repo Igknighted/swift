@@ -1,63 +1,49 @@
 #!/bin/bash
-#
-# This is an automated builder script that can be used to build compiled CGI binaries with incrond.
-#
-# !buildmng: OFF
-# !buildcmd: exit
+LASTFILE=""
+LASTPATH=""
+LASTMODIFIEDTIME=$(date +%s)
 
 
-if [ ! -d "$1" ]; then
-	echo Invalid path selected
-	exit
-fi
-
-cd "$1"
-
-if [ ! -f "$2" ]; then
-	echo Invalid file selected
-	exit
-fi
-
-FILENAME=$2
-NAME="${FILENAME%.*}"
-SECONDS_AGO_LAST_MODIFIED=$(echo `date --utc +%s` - `date --utc --reference="$FILENAME" +%s` | bc)
-
-# this entire block of code is for troubleshooting.
-# I used it and found out I onling needed to use IN_CREATE because g++ is a bitch
-# Steps:
-# - Set incron
-# - edit a monitored file
-# - Run this over and over to see what's up: ps aux | grep -E 'swiftbuild|g\+\+' --color
-#
-# - uncomment following:
-#
-#echo Waiting 15 seconds for safety.
-#sleep 15s;
-#
-#if [ "$SECONDS_AGO_LAST_MODIFIED" -le "15" ]; then
-#	echo "File was edited within the last 15 seconds... not bothering"
-#	exit
-#fi
+/usr/bin/inotifywait --format %w'/,/'%f'/,/'%e -e create,delete,modify,move -mrq $1 \
+ | while read linein; do
+	#echo "$linein"
 
 
-echo "$FILENAME" | grep '^\.' && echo Hidden file, not doing it. &&  exit
-grep -q '!buildon' "$2" || echo Build set to off, not going it. 
-grep -q '!buildon' "$2" || exit
+	FPATH=$(echo $linein | awk -F'/,/' '{print $1}')
+	FILE=$(echo $linein | awk -F'/,/' '{print $2}')
+	ACTION=$(echo $linein | awk -F'/,/' '{print $3}')
 
-# CRLF line terminators will just fudge things up... seriously... stop it windows
-sed -i 's:\r::g' "$FILENAME"
+	if [ -f "$FILE" ] && [ -d "$FPATH" ] && [[ ! "$FILE" =~ ^\. ]]; then
+		if [ "$ACTION" == "MODIFY" ] || [ "$ACTION" == "CREATE" ] || [ "$ACTION" == "MOVED_TO" ]; then
+			TIMEDIFF=$(echo `date +%s` - $LASTMODIFIEDTIME | bc)
 
-BUILDCMD=$(grep '!buildcmd:' "$2" | cut -d':' -f2 | sed -e "s:__filename__:$FILENAME:g" -e "s:__name__:$NAME:g")
+			if [ "$FILE" == "$LASTFILE" ] && [ "$FPATH" == "$LASTPATH" ] && [ "$TIMEDIFF" -gt "30" ] || [ "$FILE" != "$LASTFILE" ]; then
+				NAME="${FILE%.*}"
+				
+				cd "$FPATH"
 
-if [ "$BUILDCMD" == "" ]; then
-	echo No build command
-	exit
-fi
+				grep -q '!buildon' "$FILE"
+				if [[ $? -eq 0 ]]; then
+					echo $FILE
 
+					# CRLF line terminators will just fudge things up... seriously... stop it window
+					sed -i 's:\r::g' "$FILE"
 
+					BUILDCMD=$(grep '!buildcmd:' "$FILE" | cut -d':' -f2 | sed -e "s:__filename__:$FILE:g" -e "s:__name__:$NAME:g")
+					if [ "$BUILDCMD" != "" ]; then
+						echo Running: $BUILDCMD
+						$BUILDCMD
 
-echo Running: $BUILDCMD
+						pwd >> ~/buildlog
+						echo $BUILDCMD >> ~/buildlog
+					fi
+				fi
+				
+			fi
 
-$BUILDCMD
-
-
+			LASTFILE="$FILE"
+			LASTPATH="$FPATH"
+			LASTMODIFIEDTIME=$(date +%s)
+		fi
+	fi
+done
