@@ -1,0 +1,29 @@
+#!/bin/bash
+IAM=$(whoami)
+
+if [ "$IAM" != "root" ]
+then
+	echo You must be root to run setup
+	exit
+fi
+
+if [ ! -f /etc/redhat-release ]
+then
+	echo Expected to run this on a RHEL based server... woe is me
+	exit
+fi
+
+cd "$(dirname "$0")"
+
+yum install inotify-tools -y
+cp -fv swiftbuilder_init.d-script /etc/init.d/swiftbuilder
+cp -fv swiftbuilder /usr/bin/swiftbuilder
+cp -fv swiftbuilder.conf /etc/swiftbuilder.conf
+
+chmod -v +x /etc/init.d/swiftbuilder /usr/bin/swiftbuilder
+
+echo Done moving files into place.... do the following
+echo
+echo edit /etc/swiftbuilder.conf 
+echo run: service swiftbuilder start
+echo run: chkconfig swiftbuilder on

@@ -37,17 +37,10 @@ Swiftbuilder Setup
 ================================================================================
 This was tested in a CentOS 6 environment. You need epel installed.
 
-Install inotify-tools:
-# yum install inotify-tools -y
+Run the setup script in the swiftbuilder directory.
+# bash swiftbuilder/setup
 
-Now run the application:
-# setsid /var/www/html/bin/swiftbuilder /var/www/html >/dev/null 2>&1
-
-This is the location that we places swiftbuilder in:
-	/var/www/html/bin/swiftbuilder
-
-This is the website directory we are monitoring for changes:
-	/var/www/html
+Follow the instructions in it's output.
 
 
 Examples

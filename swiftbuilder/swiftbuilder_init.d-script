@@ -1,0 +1,46 @@
+#!/bin/bash
+#
+# swiftbuilder        Startup script for the swiftbuilder
+# chkconfig: 345 85 15
+#
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+start() {
+	if [ -f "/etc/swiftbuilder.conf" ]
+	then
+		cat /etc/swiftbuilder.conf | grep -vE '^[[:space:]]*$|^#' | while read linein; do
+			if [[ ! "$linein" =~ "^#" ]]
+			then
+				RUNUSER=$(echo $linein | awk -F', ' '{print $1}')
+				DIRECTORY=$(echo $linein | awk -F', ' '{print $2}')
+				su - $RUNUSER -c "setsid /usr/bin/swiftbuilder $DIRECTORY > /dev/null 2>&1 &"
+				echo Launched swiftbuilder for "$RUNUSER"
+			fi
+		done
+	fi
+	echo Done.
+}
+
+stop() {
+		ps aux | grep /usr/bin/swiftbuilder | awk '{print "ps aux | grep swift | grep -q \""$2"\" && kill -9 "$2}' |  bash
+		echo Killing all swiftbuilder instances.
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	stop
+	start
+	;;
+  *)
+	echo $"Usage: swiftbuilder {start|stop|restart}"
+esac
+
+exit $?
