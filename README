@@ -17,11 +17,6 @@ web based applications.
 Open Source Statement:
 swift.cpp is open source and free to use and redistribute.
 
-Todo:
-- Need to make a simplistic deployment interface. This is something that needs to
-be usable on even a shared hosting platform without SSH access.
-
-- Need to research MySQL usage in C++ and identify if a DBAL is needed.
 
 How to compile
 ================================================================================
