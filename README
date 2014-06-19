@@ -25,7 +25,9 @@ g++ example1_templates.cpp -o /home/username/public_html/example1_templates.cgi
 
 It should run from www.yoursite.com/example1_templates.cgi
 
-You may need to setup apache to execute CGI binaries. 
+Note: Apache may need mod_cgi installed for this to work. The .htaccess file
+sets things up for us. Also the preferred method for building is with the
+swiftbuilder.
 
 
 Swiftbuilder Setup
@@ -61,6 +63,9 @@ header you want can be set, not just redirects.
 
 example7 - this example shows how to setup hooks with the hook command. Hooks
 are essentially just dynamic libraries being loaded in.
+
+example8 - Shows how to use MySQL with C++ and also has notes about what 
+packages are needed in RHEL based systems as well as compile flags for MySQL.
 
 License
 ================================================================================
