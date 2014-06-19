@@ -2,3 +2,5 @@
 Options +ExecCGI
 AddHandler cgi-script .cgi
 DirectoryIndex index.cgi index.php index.html index.htm
+
+
