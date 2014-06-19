@@ -25,7 +25,7 @@ LASTMODIFIEDTIME=$(date +%s)
 				NAME="${FILE%.*}"
 				
 
-				grep -q '!buildon' "$FILE"
+				grep -q '[!]buildon' "$FILE"
 				if [[ $? -eq 0 ]]; then
 					echo $FILE
 
@@ -35,7 +35,7 @@ LASTMODIFIEDTIME=$(date +%s)
 					BUILDCMD=$(grep '!buildcmd:' "$FILE" | cut -d':' -f2 | sed -e "s:__filename__:$FILE:g" -e "s:__name__:$NAME:g")
 					if [ "$BUILDCMD" != "" ]; then
 						echo Running: $BUILDCMD
-						$BUILDCMD
+						eval $BUILDCMD
 
 						if [ -f ~/buildlog ]
 						then
