@@ -18,9 +18,10 @@ cd "$(dirname "$0")"
 yum install inotify-tools -y
 cp -fv swiftbuilder_init.d-script /etc/init.d/swiftbuilder
 cp -fv swiftbuilder /usr/bin/swiftbuilder
+cp -fv swiftbuild /usr/bin/swiftbuild
 cp -fv swiftbuilder.conf /etc/swiftbuilder.conf
 
-chmod -v +x /etc/init.d/swiftbuilder /usr/bin/swiftbuilder
+chmod -v +x /etc/init.d/swiftbuilder /usr/bin/swiftbuilder /usr/bin/swiftbuild
 
 echo Done moving files into place.... do the following
 echo

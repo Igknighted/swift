@@ -1,0 +1,34 @@
+#!/bin/bash
+
+	FPATH="$(cd "$( dirname "$1" )" && pwd )"
+	FILE="$(basename $1)"
+
+	if [ -d "$FPATH" ]; then
+		cd "$FPATH"
+	fi
+
+	if [ -f "$FILE" ] && [[ ! "$FILE" =~ ^\. ]]; then
+		NAME="${FILE%.*}"
+
+		touch "$FILE.swiftlock"
+				
+
+		grep -q '[!]buildon' "$FILE"
+		if [[ $? -eq 0 ]]; then
+			echo $FILE
+
+			# CRLF line terminators will just fudge things up... seriously... stop it window
+			sed -i 's:\r::g' "$FILE"
+
+			BUILDCMD=$(grep '!buildcmd:' "$FILE" | cut -d':' -f2 | sed -e "s:__filename__:$FILE:g" -e "s:__name__:$NAME:g")
+
+			if [ "$BUILDCMD" != "" ]; then
+				echo Running: $BUILDCMD
+				eval $BUILDCMD
+
+			fi
+		fi
+				
+
+		rm -rf "$FILE.swiftlock"
+	fi

@@ -1,6 +1,6 @@
 // !buildon - This lest swiftbuilder that we can use the buildcmd to make this
 // This option is read by swiftbuilder to set the the application build command on edit
-// !buildcmd: g++ -ldl -export-dynamic __filename__ -o __name__.cgi
+// !buildcmd: g++ -ldl -export-dynamic -march=native __filename__ -o __name__.cgi
 
 #include "lib/swift.cpp"
 
