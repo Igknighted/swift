@@ -1,2 +1,53 @@
 #!/bin/bash
-touch -m "$1"
+LASTFILE=""
+LASTPATH=""
+
+
+/usr/bin/inotifywait --format %w'/,/'%f'/,/'%e -e create,delete,modify,move -mrq $1 \
+ | while read linein; do
+	#echo "$linein"
+
+
+	FPATH=$(echo $linein | awk -F'/,/' '{print $1}')
+	FILE=$(echo $linein | awk -F'/,/' '{print $2}')
+	ACTION=$(echo $linein | awk -F'/,/' '{print $3}')
+
+	if [ -d "$FPATH" ]; then
+		cd "$FPATH"
+	fi
+
+	if [ -f "$FILE" ] && [[ ! "$FILE" =~ ^\. ]]; then
+		if [ "$ACTION" == "MODIFY" ] || [ "$ACTION" == "CREATE" ] || [ "$ACTION" == "MOVED_TO" ]; then
+
+			#LASTMODIFIED=$(echo `date +%s` - `date -r $FILE +%s` | bc)
+			#if [ "$FILE" != "$LASTFILE" ] && [ "$FPATH" != "$LASTPATH" ] && [[ "$LASTMODIFIED" -gt "30" ]]; then
+			if [ "$FILE" != "$LASTFILE" ] && [ "$FPATH" != "$LASTPATH" ] && [ ! -f "$FILE.swiftlock" ]; then
+				NAME="${FILE%.*}"
+				
+
+				grep -q '[!]buildon' "$FILE"
+				if [[ $? -eq 0 ]]; then
+					echo $FILE
+
+					# CRLF line terminators will just fudge things up... seriously... stop it window
+					sed -i 's:\r::g' "$FILE"
+
+					BUILDCMD=$(grep '!buildcmd:' "$FILE" | cut -d':' -f2 | sed -e "s:__filename__:$FILE:g" -e "s:__name__:$NAME:g")
+					if [ "$BUILDCMD" != "" ]; then
+						echo Running: $BUILDCMD
+						eval $BUILDCMD
+
+						if [ -f ~/buildlog ]
+						then
+							echo "$FPATH, $BUILDCMD" >> ~/buildlog
+						fi
+			LASTFILE="$FILE"
+			LASTPATH="$FPATH"
+					fi
+				fi
+				
+			fi
+
+		fi
+	fi
+done
