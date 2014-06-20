@@ -41,12 +41,12 @@ LASTPATH=""
 						then
 							echo "$FPATH, $BUILDCMD" >> ~/buildlog
 						fi
-			LASTFILE="$FILE"
-			LASTPATH="$FPATH"
 					fi
 				fi
 				
 			fi
+			LASTFILE="$FILE"
+			LASTPATH="$FPATH"
 
 		fi
 	fi
