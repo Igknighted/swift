@@ -29,6 +29,7 @@ swiftbuilder.
 
 Swiftbuilder Setup
 ================================================================================
+*** DO NOT USE SWIFTBUILDER YET. It is fundamentally broken ***
 This was tested in a CentOS 6 environment. You need epel installed.
 
 Run the setup script in the swiftbuilder directory.
