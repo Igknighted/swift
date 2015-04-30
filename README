@@ -26,6 +26,8 @@ Note: Apache may need mod_cgi installed for this to work. The .htaccess file
 sets things up for us. Also the preferred method for building is with the
 swiftbuilder.
 
+* Sometime GCC-C++ compilers have a problem where you will have to add -ldl to
+the end of the compile command.
 
 Swiftbuilder Setup
 ================================================================================
